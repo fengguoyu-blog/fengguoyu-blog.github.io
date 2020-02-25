@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>第1节 并发和多线程概述 | 风国语</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://fengguoyu-blog.github.io//favicon.ico?v=1582642206302">
+<link rel="stylesheet" href="https://fengguoyu-blog.github.io//styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="Java 并发是一个涵盖Java平台上的多线程，并发和并行的术语。它包括Java并发工具，问题和解决方案。该Java并发教程涵盖了多线程、并发结构、并发问题、并发成本与Java多线程相关的好处。
+
+Java 并发和多线程 概述
+
+1.1 并..." />
+    <meta name="keywords" content="" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://fengguoyu-blog.github.io/">
+        <img src="https://fengguoyu-blog.github.io//images/avatar.png?v=1582642206302" class="site-logo">
+        <h1 class="site-title">风国语</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+        
+          <a href="/" class="site-nav">
+            Java面试题
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      温故而知新
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://fengguoyu-blog.github.io//atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">第1节 并发和多线程概述</h2>
+            <div class="post-date">2020-02-25</div>
+            
+            <div class="post-content" v-pre>
+              <p>Java 并发是一个涵盖Java平台上的多线程，并发和并行的术语。它包括Java并发工具，问题和解决方案。该Java并发教程涵盖了多线程、并发结构、并发问题、并发成本与Java多线程相关的好处。</p>
+<ol>
+<li>Java 并发和多线程 概述</li>
+</ol>
+<p>1.1 并发简史</p>
+<p>在过去，计算机只有一个CPU，并且一次只能执行一个程序。后来出现了多任务处理，这意味着计算机可以同时执行多个程序。然而，这里的“同时”并非真正“在同一时间”。单个CPU在多个程序之间共享。操作系统将在程序运行之间切换，在切换之前执行每个程序一段时间，只不过这一段时间特别短，给人的感觉像是在同时执行，其实并非严格意义上的同时。</p>
+<p>随着多任务处理给软件开发人员带来了新的挑战。程序不能再假定所有的CPU时间都可用，也不能假定所有的内存或任何其他计算机资源都可用。一个好的程序应该释放它不再使用的所有资源，以便其他程序可以使用它们。</p>
+<p>后来出现了多线程，这意味着您可以在同一个程序中有多个执行线程。执行线程可以看作是执行程序的cpu。当有多个线程执行同一个程序时，这就像在同一个程序中执行多个CPU一样。</p>
+<p>多线程是可以提高某些类型程序性能的好方法。然而，多线程比多任务处理更具挑战性。线程在同一程序中执行，因此会同时读写同一块内存。这可能导致在单线程程序中看不到错误。其中一些错误可能在单CPU机器上看不到，因为两个线程从未真正“同时”执行。但是，现代计算机配备了多核CPU，甚至还有多个CPU。这意味着可以通过单独的核心或CPU同时执行单独的线程。</p>
+<p>如下图：</p>
+<p>接着我们需要思考以下问题：<br>
+如果一个线程在另一个线程写入时读取内存位置，那么第一个线程最终会读取什么值？旧的价值？第二个线程写的值？还是两者之间的混合价？或者，如果两个线程同时写入同一个内存位置，那么当它们完成时会留下什么值？第一个线程写的值？第二个线程写的值？或者是两个混合写的值？</p>
+<p>以上问题如果没有适当的预防措施，上面提到的结果都是可能的。这种行为甚至无法预测。结果可能会不时发生变化。因此，作为开发人员，了解如何采取正确的预防措施非常重要。这意味着学习控制线程如何访问内存、文件、数据库等共享资源。这是Java并发教程所解决的主题之一。</p>
+<p>1.2 多线程和并发</p>
+<p>Java是第一批使开发人员可以轻松使用多线程的语言之一。Java从一开始就具有多线程功能。因此，Java开发人员经常面临上述问题。这就是在Java并发上写这篇文章的原因。</p>
+<p>该教程中主要涉及Java中的多线程，但多线程中出现的一些问题和多任务处理和分布式系统中出现的问题类似。因此，在这个过程中也可能会出现对多任务处理和分布式系统的引用。所以出现了，“并发”一词而不是“多线程”。</p>
+<p>1.3 其他</p>
+<p>自Java 5并发实用程序发布以来，在并发体系结构和设计领域发生了很多事情。</p>
+<p>新的，异步的“shared-nothing”平台和API，如Vert.x和Play / Akka和Qbit已经出现。这些平台使用的是与线程共享内存和锁定的标准Java / JEE并发模型不同的并发模型。新的非阻塞并发算法已经发布，并且我们的工具包中添加了新的非阻塞工具，如LMax Disrupter。Java 7中的Fork和Join框架以及Java 8中的集合流API引入了新的函数式编程并行性。</p>
+
+            </div>
+            
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+
+
+  </body>
+</html>
